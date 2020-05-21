@@ -1,17 +1,16 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Activité
-    </ion-title>
+    <ion-title>Activité</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onNewSessionButtonClick()">
+        <ion-icon slot="icon-only" name="add" ></ion-icon>
+      </ion-button>
+      <ion-button>
+        <ion-icon slot="icon-only" name="menu"></ion-icon> <!-- TODO : Change menu icon to more icon -->
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+<ion-content>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Activité</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 2 page"></app-explore-container>
 </ion-content>

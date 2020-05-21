@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { NewSessionModalPage } from '../new-session-modal/new-session-modal.page';
 
 @Component({
   selector: 'app-tab2',
@@ -7,6 +9,18 @@ import { Component } from '@angular/core';
 })
 export class Tab2Page {
 
-  constructor() {}
+  constructor(
+    public modalController: ModalController
+  ) {}
 
+  async onNewSessionButtonClick(){
+    await this.openNewSessionModal();
+  }
+
+  async openNewSessionModal(){
+    const modal = await this.modalController.create({
+      component: NewSessionModalPage
+    });
+    return await modal.present();
+  }
 }
