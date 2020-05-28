@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import Duration from '../models/Duration';
+import { FormControl, Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-new-session-modal',
@@ -12,10 +13,33 @@ export class NewSessionModalPage implements OnInit {
   activityDuration: Duration;
   plusDisabled: boolean;
   minusDisabled: boolean;
+  mainForm: FormGroup;
 
   constructor(
-    public modalController: ModalController
-  ) { }
+    public modalController: ModalController,
+    private formBuilder: FormBuilder
+  ) {
+    this.mainForm = this.formBuilder.group({
+      hours: ['0', Validators.compose([
+          Validators.required,
+          Validators.max(23),
+          Validators.min(0)
+      ])],
+      minutes: ['0', Validators.compose([
+        Validators.required,
+        Validators.max(59),
+        Validators.min(0)
+      ])],
+      nbPublications: ['0', Validators.compose([
+        Validators.min(0)
+      ])],
+      nbVisites: ['0', Validators.compose([
+        Validators.min(0)
+      ])],
+      comments: ['', Validators.compose([
+      ])]
+    });
+  }
 
   ngOnInit() {
     this.activityDuration = new Duration(0, null);
@@ -24,51 +48,27 @@ export class NewSessionModalPage implements OnInit {
   }
 
   enablePlusMinusButtons(){
-    if(this.activityDuration.hours === 23){
-      this.plusDisabled = true;
-      this.minusDisabled = false;
-    } else if (this.activityDuration.hours === 0){
-      this.plusDisabled = false;
-      this.minusDisabled = true;
-    } else {
-      this.plusDisabled = false;
-      this.minusDisabled = false;
-    }
+    // tslint:disable-next-line: radix
+    const currentValue = parseInt(this.mainForm.get('hours').value);
+    this.minusDisabled = (currentValue <= 0);
+    this.plusDisabled = (currentValue >= 23);
   }
 
   onIncrementHourButtonClick(){
-    if(this.activityDuration.canIncrement()){
-      this.activityDuration.incrementHours();
-    }
+    // tslint:disable-next-line: radix
+    const currentValue = parseInt(this.mainForm.get('hours').value);
+    this.mainForm.get('hours').setValue(currentValue + 1);
     this.enablePlusMinusButtons();
   }
 
   onDecrementHourButtonClick(){
-    if(this.activityDuration.canDecrement()){
-      this.activityDuration.decrementHours();
-    }
+    // tslint:disable-next-line: radix
+    const currentValue = parseInt(this.mainForm.get('hours').value);
+    this.mainForm.get('hours').setValue(currentValue - 1);
     this.enablePlusMinusButtons();
   }
-  
 
   async dismissModal(){
-    this.modalController.dismiss({
-      'dismissed': true
-    })
+    this.modalController.dismiss();
   }
-
-  onDurationHoursChange(newHour) {
-    if (Duration.checkValiditeByValue({hours:newHour, minutes: this.activityDuration.minutes})){
-      this.activityDuration.hours = newHour;
-    }
-    this.enablePlusMinusButtons();
-  }
-
-  onDurationMinutesChange(newMinutes) {
-    if(Duration.checkValiditeByValue({hours: this.activityDuration.hours, minutes: newMinutes})){
-      this.activityDuration.minutes = newMinutes;
-    }
-  }
-
-
 }
