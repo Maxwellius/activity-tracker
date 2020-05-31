@@ -1,7 +1,9 @@
 import Duration from './Duration';
 import { tick } from '@angular/core/testing';
+import { Storage } from '@ionic/storage';
 
 export class Session {
+    id: number;
     type: string; //SessionType
     nbPublications: number;
     nbVisits: number;
@@ -9,8 +11,9 @@ export class Session {
     comments: string;
     imagePath: string;
     date: string;
-
-    constructor(type: string, nbPublications: number, nbVisits: number, duration: Duration, date: string, comments: string = "", imagePath: string = ""){
+    storage: Storage;
+    constructor(id: number, type: string, nbPublications: number, nbVisits: number, duration: Duration, date: string, comments: string = "", imagePath: string = ""){
+        this.id = id;
         this.type = type;
         this.nbPublications = nbPublications;
         this.nbVisits = nbVisits;

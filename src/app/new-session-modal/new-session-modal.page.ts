@@ -93,29 +93,44 @@ export class NewSessionModalPage implements OnInit {
 
   async onSubmit(){
     // Crée et enregistre une nouvelle session.
-    const newDuration = new Duration(null, {hours: this.mainForm.value.hours as number, minutes: this.mainForm.value.minutes as number})
-    const newSession = new Session(
-      this.mainForm.value.type as string,
-      this.mainForm.value.nbPublications as number,
-      this.mainForm.value.nbVisits as number,
-      newDuration,
-      this.mainForm.value.dateSession as string,
-      this.mainForm.value.comments as string,
-      this.imagePath
-    );
-
-    // Recuperation du tableau de données
-    const sessionsList = await this.storage.get('sessionsList');
-    
+    const sessionsList = await this.storage.get('sessionsList') as [Session];
     if (sessionsList === null){
+      const newId = 1;
+      const newDuration = new Duration(null, {hours: this.mainForm.value.hours as number, minutes: this.mainForm.value.minutes as number})
+      const newSession = new Session(
+        newId,
+        this.mainForm.value.type as string,
+        this.mainForm.value.nbPublications as number,
+        this.mainForm.value.nbVisits as number,
+        newDuration,
+        this.mainForm.value.dateSession as string,
+        this.mainForm.value.comments as string,
+        this.imagePath
+      );
+
       const newSessionList = [];
       newSessionList.push(newSession);
-      await this.storage.set('sessionsList', sessionsList);
+      await this.storage.set('sessionsList', newSessionList);
+      console.log('etaitvide');
     } else {
+      const newId = sessionsList[sessionsList.length - 1].id + 1;
+      const newDuration = new Duration(null, {hours: this.mainForm.value.hours as number, minutes: this.mainForm.value.minutes as number});
+      const newSession = new Session(
+        newId,
+        this.mainForm.value.type as string,
+        this.mainForm.value.nbPublications as number,
+        this.mainForm.value.nbVisits as number,
+        newDuration,
+        this.mainForm.value.dateSession as string,
+        this.mainForm.value.comments as string,
+        this.imagePath
+      );
       sessionsList.push(newSession);
       console.log('currentList apres', sessionsList);
       await this.storage.set('sessionsList', sessionsList);
+      console.log('etaitplein')
     }
+    console.log('Resultat :', await this.storage.get('sessionsList'));
     this.dismissModal();
   }
   async onTakePictureButtonPush(){
