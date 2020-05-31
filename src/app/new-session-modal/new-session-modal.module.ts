@@ -16,6 +16,6 @@ import { NewSessionModalPage } from './new-session-modal.page';
   declarations: [NewSessionModalPage],
   entryComponents: [
     NewSessionModalPage
-  ]
+  ],
 })
 export class NewSessionModalPageModule {}
