@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
+import Duration from 'src/app/models/Duration';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import Duration from '../models/Duration';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { File } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Session } from '../models/Session';
+import { Session } from 'src/app/models/Session';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Storage } from '@ionic/storage';
+import { File } from '@ionic-native/file/ngx';
 
 @Component({
-  selector: 'app-new-session-modal',
-  templateUrl: './new-session-modal.page.html',
-  styleUrls: ['./new-session-modal.page.scss'],
+  selector: 'app-edit-session-modal',
+  templateUrl: './edit-session-modal.page.html',
+  styleUrls: ['./edit-session-modal.page.scss'],
 })
-export class NewSessionModalPage implements OnInit {
+export class EditSessionModalPage implements OnInit {
+
+  previousSession: Session;
 
   activityDuration: Duration;
   plusDisabled: boolean;
@@ -30,35 +31,35 @@ export class NewSessionModalPage implements OnInit {
     private webview: WebView,
     private storage: Storage
   ) {
+  }
+
+  ngOnInit() {
+    console.log(this.previousSession);
     this.mainForm = this.formBuilder.group({
-      hours: [0, Validators.compose([
+      hours: [this.previousSession.duration.hours, Validators.compose([
           Validators.required,
           Validators.max(23),
           Validators.min(0)
       ])],
-      minutes: [0, Validators.compose([
+      minutes: [this.previousSession.duration.minutes, Validators.compose([
         Validators.required,
         Validators.max(59),
         Validators.min(0)
       ])],
-      dateSession: ['0', Validators.required],
-      type: ['classique', Validators.required],
-      nbPublications: [0, Validators.compose([
+      dateSession: [this.previousSession.date, Validators.required],
+      type: [this.previousSession.type, Validators.required],
+      nbPublications: [this.previousSession.nbPublications, Validators.compose([
         Validators.min(0)
       ])],
-      nbVisites: [0, Validators.compose([
+      nbVisites: [this.previousSession.nbVisites, Validators.compose([
         Validators.min(0)
       ])],
-      nbVideos: [0, Validators.compose([
+      nbVideos: [this.previousSession.nbVideos, Validators.compose([
         Validators.min(0)
       ])],
-      comments: ['', Validators.compose([
+      comments: [this.previousSession.comments, Validators.compose([
       ])]
     });
-    this.mainForm.get('dateSession').setValue(new Date().toISOString());
-  }
-
-  ngOnInit() {
     this.activityDuration = new Duration(0, null);
     this.plusDisabled = false;
     this.minusDisabled = true;
@@ -98,29 +99,11 @@ export class NewSessionModalPage implements OnInit {
     // Crée et enregistre une nouvelle session.
     const sessionsList = await this.storage.get('sessionsList') as [Session];
     if (sessionsList === null){
-      const newId = 1;
-      const newDuration = new Duration(null, {hours: this.mainForm.value.hours as number, minutes: this.mainForm.value.minutes as number})
-      const newSession = new Session(
-        newId,
-        this.mainForm.value.type as string,
-        this.mainForm.value.nbPublications as number,
-        this.mainForm.value.nbVisites as number,
-        this.mainForm.value.nbVideos as number,
-        newDuration,
-        this.mainForm.value.dateSession as string,
-        this.mainForm.value.comments as string,
-        this.imagePath
-      );
-
-      const newSessionList = [];
-      newSessionList.push(newSession);
-      await this.storage.set('sessionsList', newSessionList);
-      console.log('etaitvide');
+      console.log('Erreur modif session: La liste ne devrait pas être vide');
     } else {
-      const newId = sessionsList[sessionsList.length - 1].id + 1;
       const newDuration = new Duration(null, {hours: this.mainForm.value.hours as number, minutes: this.mainForm.value.minutes as number});
       const newSession = new Session(
-        newId,
+        this.previousSession.id,
         this.mainForm.value.type as string,
         this.mainForm.value.nbPublications as number,
         this.mainForm.value.nbVisites as number,
@@ -130,11 +113,13 @@ export class NewSessionModalPage implements OnInit {
         this.mainForm.value.comments as string,
         this.imagePath
       );
-      console.log(newSession)
-      sessionsList.push(newSession);
-      console.log('currentList apres', sessionsList);
+      const indexFound = sessionsList.findIndex(session => session.id === this.previousSession.id)
+      if(indexFound === undefined){
+        console.error('Erreur, index non trouvé');
+      } else {
+        sessionsList[indexFound] = newSession;
+      }
       await this.storage.set('sessionsList', sessionsList);
-      console.log('etaitplein')
     }
     console.log('Resultat :', await this.storage.get('sessionsList'));
     this.dismissModal();

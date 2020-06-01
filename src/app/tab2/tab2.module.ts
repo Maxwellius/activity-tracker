@@ -8,6 +8,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 import { NewSessionModalPageModule } from '../new-session-modal/new-session-modal.module';
+import { SessionCardComponent } from './session-card/session-card.component';
 
 @NgModule({
   imports: [
@@ -16,8 +17,8 @@ import { NewSessionModalPageModule } from '../new-session-modal/new-session-moda
     FormsModule,
     ExploreContainerComponentModule,
     Tab2PageRoutingModule,
-    NewSessionModalPageModule
+    NewSessionModalPageModule,
   ],
-  declarations: [Tab2Page]
+  declarations: [Tab2Page, SessionCardComponent]
 })
 export class Tab2PageModule {}
