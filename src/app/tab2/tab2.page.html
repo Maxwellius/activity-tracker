@@ -28,7 +28,7 @@
     <ion-row>
         <ion-col size="12">
           <div class="sessionCardsList" *ngIf="nbSessions > 0">
-                <app-session-card [mySession]="session" *ngFor="let session of sessionsListFiltered"></app-session-card>
+                <app-session-card [mySession]="session" [refreshList]="refreshList" *ngFor="let session of sessionsListFiltered"></app-session-card>
           </div>
           <div class="sessionListEmpty ion-align-items-center ion-justify-items-center" *ngIf="nbSessions <= 0">
             Vous n'avez aucune session ce mois-ci !
