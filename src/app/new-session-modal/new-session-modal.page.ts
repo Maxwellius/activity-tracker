@@ -96,7 +96,7 @@ export class NewSessionModalPage implements OnInit {
 
   async onSubmit(){
     // Crée et enregistre une nouvelle session.
-    const sessionsList = await this.storage.get('sessionsList') as [Session];
+    const sessionsList = await this.storage.get('sessionsList') as Session[];
     if (sessionsList === null){
       const newId = 1;
       const newDuration = new Duration(null, {hours: this.mainForm.value.hours as number, minutes: this.mainForm.value.minutes as number})
@@ -117,7 +117,12 @@ export class NewSessionModalPage implements OnInit {
       await this.storage.set('sessionsList', newSessionList);
       console.log('etaitvide');
     } else {
-      const newId = sessionsList[sessionsList.length - 1].id + 1;
+      var newId
+      if (sessionsList.length === 0){
+        newId = 1
+      } else {
+        newId = sessionsList[sessionsList.length - 1].id + 1;
+      }
       const newDuration = new Duration(null, {hours: this.mainForm.value.hours as number, minutes: this.mainForm.value.minutes as number});
       const newSession = new Session(
         newId,

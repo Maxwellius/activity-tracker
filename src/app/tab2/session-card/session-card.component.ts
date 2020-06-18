@@ -74,9 +74,10 @@ export class SessionCardComponent implements OnInit {
           text: 'Annuler',
           role: 'cancel',
         }, {
-          text: 'Okay',
+          text: 'Confirmer',
           handler: () => {
-             this.deleteSessionData();
+              console.log('Deleting Stuff');
+              this.deleteSessionData();
           }
         }
       ]
@@ -91,9 +92,10 @@ export class SessionCardComponent implements OnInit {
     this.storage.get('sessionsList').then(
       (list) => {
         const currentSession = list.findIndex(lastSession => this.mySession.id === lastSession.id)
-        const newList = list.splice(currentSession, 1);
-        this.storage.set('sessionsList', newList).then(
+        list.splice(currentSession, 1);
+        this.storage.set('sessionsList', list).then(
           () => {
+            console.log('Deleted Stuff');
             this.refreshList();
           }
         );

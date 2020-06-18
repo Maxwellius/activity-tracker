@@ -4,6 +4,7 @@ import { NewSessionModalPage } from '../new-session-modal/new-session-modal.page
 import { Session } from '../models/Session';
 import { Storage } from '@ionic/storage';
 import Duration from '../models/Duration';
+import { EmailComposer, EmailComposerOptions } from '@ionic-native/email-composer/ngx';
 
 @Component({
   selector: 'app-tab2',
@@ -25,7 +26,8 @@ export class Tab2Page implements OnInit{
 
   constructor(
     public modalController: ModalController,
-    public storage: Storage
+    public storage: Storage,
+    public emailComposer: EmailComposer
   ) {
   }
 
@@ -33,7 +35,7 @@ export class Tab2Page implements OnInit{
     await this.refreshList();
   }
 
-  async refreshList(){
+  async refreshList() {
     this.sumHours = '0';
     this.sumMinutes = '00';
     this.sumPublications = '0';
@@ -112,5 +114,11 @@ export class Tab2Page implements OnInit{
       this.refreshList();
     });
     return await modal.present();
+  }
+
+  shareReport(){
+    console.log('shareReport');
+    const reportContent = `Durée totale d\'activité: ${this.sumHours} \nNombre de publications: ${this.sumPublications} \nNombre de visites: ${this.sumVisites} \nNombre de vidéos: ${this.sumVideos} \nNombre d\'études: ${this.sumStudies}`;
+    this.emailComposer.open({subject: 'Mon résumé du mois', content: reportContent} as EmailComposerOptions);
   }
 }

@@ -9,6 +9,7 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 import { NewSessionModalPageModule } from '../new-session-modal/new-session-modal.module';
 import { SessionCardComponent } from './session-card/session-card.component';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { SessionCardComponent } from './session-card/session-card.component';
     Tab2PageRoutingModule,
     NewSessionModalPageModule,
   ],
+  providers: [EmailComposer],
   declarations: [Tab2Page, SessionCardComponent]
 })
 export class Tab2PageModule {}
